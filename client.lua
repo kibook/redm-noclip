@@ -27,6 +27,9 @@ function ToggleNoClip()
 	end
 end
 
+RegisterCommand('noclip', ToggleNoClip)
+TriggerEvent('chat:addSuggestion', '/noclip', 'Toggle noclip mode', {})
+
 function DrawText(text, x, y, centred)
 	SetTextScale(0.35, 0.35)
 	SetTextColor(255, 255, 255, 255)
