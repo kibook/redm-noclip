@@ -15,14 +15,40 @@ local MinSpeed = 0.1
 
 local Enabled = false
 
-function ToggleNoClip()
+function GetNoClipTarget()
 	local ped = PlayerPedId()
+	local veh = GetVehiclePedIsIn(ped, false)
+	local mnt = GetMount(ped)
+	return (veh == 0 and (mnt == 0 and ped or mnt) or veh)
+end
+
+-- Either GetEntityCoords or SetEntityCoords offsets the Z coordinate by some
+-- amount depending on the entity. This causes the entity to slowly move
+-- upwards when you set to the same Z you get.
+--
+-- This function determines what that offset is by moving the entity and
+-- calculating the difference in the Z coordinate.
+--
+-- Although it seems to work fine in practice, moving the entity constantly
+-- feels like a kludge, so if the offset is related to some property of the
+-- entity (height, size), that would be better to use.
+function GetOffset(entity)
+	local x1, y1, z1 = table.unpack(GetEntityCoords(entity))
+	SetEntityCoords(entity, x1, y1, z1)
+	x2, y2, z2 = table.unpack(GetEntityCoords(entity))
+	local offset = z2 - z1
+	SetEntityCoords(entity, x1, y1, z1 - offset)
+	return offset
+end
+
+function ToggleNoClip()
+	local entity = GetNoClipTarget()
 
 	if Enabled then
-		FreezeEntityPosition(ped, false)
+		FreezeEntityPosition(entity, false)
 		Enabled = false
 	else
-		FreezeEntityPosition(ped, true)
+		FreezeEntityPosition(entity, true)
 		Enabled = true
 	end
 end
@@ -48,14 +74,17 @@ CreateThread(function()
 		end
 
 		if Enabled then
-			local ped = PlayerPedId()
-			local x, y, z = table.unpack(GetEntityCoords(ped))
+			local entity = GetNoClipTarget()
+			local x, y, z = table.unpack(GetEntityCoords(entity))
+
+			-- See GetOffset above for why this offset on the Z coordinate is necessary.
+			local offset = GetOffset(entity)
 
 			DrawText(string.format('NoClip Speed: %.1f', Speed), 0.5, 0.90, true)
 			DrawText('W/A/S/D - Move, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed', 0.5, 0.95, true)
 
-			ClearPedTasksImmediately(ped, false, false)
-			SetEntityHeading(ped, 180.0)
+			ClearPedTasksImmediately(entity, false, false)
+			SetEntityHeading(entity, 180.0)
 
 			if Speed > MaxSpeed then
 				Speed = MaxSpeed
@@ -71,22 +100,22 @@ CreateThread(function()
 				Speed = Speed - 0.1
 			end
 			if IsControlPressed(0, CONTROL_W) then
-				SetEntityCoords(ped, x, y + Speed, z - 1)
+				SetEntityCoords(entity, x, y + Speed, z - offset)
 			end
 			if IsControlPressed(0, CONTROL_S) then
-				SetEntityCoords(ped, x, y - Speed, z - 1)
+				SetEntityCoords(entity, x, y - Speed, z - offset)
 			end
 			if IsControlPressed(0, CONTROL_A) then
-				SetEntityCoords(ped, x - Speed, y, z - 1)
+				SetEntityCoords(entity, x - Speed, y, z - offset)
 			end
 			if IsControlPressed(0, CONTROL_D) then
-				SetEntityCoords(ped, x + Speed, y, z - 1)
+				SetEntityCoords(entity, x + Speed, y, z - offset)
 			end
 			if IsControlPressed(0, CONTROL_SHIFT) then
-				SetEntityCoords(ped, x, y, z - Speed - 1)
+				SetEntityCoords(entity, x, y, z - Speed - offset)
 			end
 			if IsControlPressed(0, CONTROL_SPACEBAR) then
-				SetEntityCoords(ped, x, y, z + Speed - 1)
+				SetEntityCoords(entity, x, y, z + Speed - offset)
 			end
 
 			DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f', x, y, z), 0.01, 0.3, false)
