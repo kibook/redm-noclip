@@ -8,6 +8,7 @@ local CONTROL_S = 0xD27782E3
 local CONTROL_D = 0xB4E465B4
 local CONTROL_SPACEBAR = 0xD9D0E1C0
 local CONTROL_SHIFT = 0x8FFC75D6
+local CONTROL_Q = 0xDE794E3E
 
 -- Noclip control modes
 local ABSOLUTE_MODE = 0
@@ -25,21 +26,21 @@ local Speed = 0.1
 local MaxSpeed = 10.0
 local MinSpeed = 0.1
 
--- The default noclip control mode.
+-- Whether to enable relative mode by default.
 --
--- ABSOLUTE_MODE: Movement is based on the cardinal directions.
+-- false: Movement is based on the cardinal directions.
 -- 	W = North
 -- 	S = South
 -- 	A = East
 -- 	D = West
 --
--- RELATIVE_MODE: Movement is based on the current heading.
+-- true: Movement is based on the current heading.
 -- 	W = forward
 -- 	S = backwards
 -- 	A = rotate left
 -- 	D = rotate right
 --
-local NoClipMode = RELATIVE_MODE
+local RelativeMode = true
 
 -- == END OF CONFIGURATION ===
 
@@ -57,9 +58,11 @@ function ToggleNoClip()
 	local entity = GetNoClipTarget()
 
 	if Enabled then
+		ClearPedTasksImmediately(entity, false, false)
 		FreezeEntityPosition(entity, false)
 		Enabled = false
 	else
+		ClearPedTasksImmediately(entity, false, false)
 		FreezeEntityPosition(entity, true)
 		Enabled = true
 	end
@@ -67,17 +70,6 @@ end
 
 RegisterCommand('noclip', ToggleNoClip)
 TriggerEvent('chat:addSuggestion', '/noclip', 'Toggle noclip mode', {})
-
-RegisterCommand('noclipmode', function(source, args, raw)
-	if args[1] == '0' then
-		NoClipMode = ABSOLUTE_MODE
-	elseif args[1] == '1' then
-		NoClipMode = RELATIVE_MODE
-	end
-end, false)
-TriggerEvent('chat:addSuggestion', '/noclipmode', 'Change noclip control mode', {
-	{name = 'mode', help = '0 (movement is based on cardinal directions) or 1 (movement is based on heading)'}
-})
 
 function DrawText(text, x, y, centred)
 	SetTextScale(0.35, 0.35)
@@ -114,6 +106,11 @@ CreateThread(function()
 			-- Print the current noclip speed on screen
 			DrawText(string.format('NoClip Speed: %.1f', Speed), 0.5, 0.90, true)
 
+			-- Change noclip control mode
+			if IsControlJustPressed(0, CONTROL_Q) then
+				RelativeMode = not RelativeMode
+			end
+
 			-- Increase/decrease speed
 			if IsControlPressed(0, CONTROL_PAGE_UP) then
 				Speed = Speed + 0.1
@@ -130,12 +127,12 @@ CreateThread(function()
 				SetEntityCoordsNoOffset(entity, x, y, z + Speed)
 			end
 
-			if NoClipMode == RELATIVE_MODE then
+			if RelativeMode then
 				local h = GetEntityHeading(entity)
 
 				-- Print the coordinates, heading and controls on screen
 				DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f\nHeading: %.0f', x, y, z, h), 0.01, 0.3, false)
-				DrawText('W/S - Move, A/D - Rotate, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed', 0.5, 0.95, true)
+				DrawText('W/S - Move, A/D - Rotate, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Absolute mode', 0.5, 0.95, true)
 
 				-- Calculate the change in x and y based on the speed and heading.
 				local r = -h * math.pi / 180
@@ -167,10 +164,10 @@ CreateThread(function()
 				if IsControlPressed(0, CONTROL_D) then
 					SetEntityHeading(entity, h - 1)
 				end
-			elseif NoClipMode == ABSOLUTE_MODE then
+			else
 				-- Print the coordinates and controls on screen
 				DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f', x, y, z), 0.01, 0.3, false)
-				DrawText('W/A/S/D - Move, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed', 0.5, 0.95, true)
+				DrawText('W/A/S/D - Move, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Relative mode', 0.5, 0.95, true)
 
 				ClearPedTasksImmediately(entity, false, false)
 				SetEntityHeading(entity, 180.0)
