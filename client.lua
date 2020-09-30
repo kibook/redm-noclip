@@ -1,28 +1,28 @@
 -- Control names
-local CONTROL_F6 = 0x3C0A40F2
-local CONTROL_PAGE_UP = 0x446258B6
-local CONTROL_PAGE_DOWN = 0x3C3DD371
-local CONTROL_W = 0x8FD015D8
-local CONTROL_A = 0x7065027D
-local CONTROL_S = 0xD27782E3
-local CONTROL_D = 0xB4E465B4
-local CONTROL_SPACEBAR = 0xD9D0E1C0
-local CONTROL_SHIFT = 0x8FFC75D6
-local CONTROL_Q = 0xDE794E3E
+local INPUT_PHOTO_MODE            = 0x3C0A40F2 -- F6
+local INPUT_CREATOR_LT            = 0x446258B6 -- Page Up
+local INPUT_CREATOR_RT            = 0x3C3DD371 -- Page Down
+local INPUT_MOVE_UP_ONLY          = 0x8FD015D8 -- W
+local INPUT_MOVE_DOWN_ONLY        = 0xD27782E3 -- S
+local INPUT_MOVE_LEFT_ONLY        = 0x7065027D -- A
+local INPUT_MOVE_RIGHT_ONLY       = 0xB4E465B4 -- D
+local INPUT_JUMP                  = 0xD9D0E1C0 -- Spacebar
+local INPUT_SPRINT                = 0x8FFC75D6 -- Shift
+local INPUT_COVER                 = 0xDE794E3E -- Q
 
 -- === CONFIGURATION ===
 
 -- Configurable controls
-local ToggleControl        = CONTROL_F6
-local IncreaseSpeedControl = CONTROL_PAGE_UP
-local DecreaseSpeedControl = CONTROL_PAGE_DOWN
-local MoveUpControl        = CONTROL_SPACEBAR
-local MoveDownControl      = CONTROL_SHIFT
-local MoveForwardControl   = CONTROL_W
-local MoveBackwardControl  = CONTROL_S
-local MoveLeftControl      = CONTROL_A
-local MoveRightControl     = CONTROL_D
-local ToggleModeControl    = CONTROL_Q
+local ToggleControl        = INPUT_PHOTO_MODE
+local IncreaseSpeedControl = INPUT_CREATOR_LT
+local DecreaseSpeedControl = INPUT_CREATOR_RT
+local UpControl            = INPUT_JUMP
+local DownControl          = INPUT_SPRINT
+local ForwardControl       = INPUT_MOVE_UP_ONLY
+local BackwardControl      = INPUT_MOVE_DOWN_ONLY
+local LeftControl          = INPUT_MOVE_LEFT_ONLY
+local RightControl         = INPUT_MOVE_RIGHT_ONLY
+local ToggleModeControl    = INPUT_COVER
 
 -- Default speed
 local Speed = 0.1
@@ -125,10 +125,10 @@ CreateThread(function()
 			end
 
 			-- Move up/down
-			if IsControlPressed(0, MoveUpControl) then
+			if IsControlPressed(0, UpControl) then
 				SetEntityCoordsNoOffset(entity, x, y, z + Speed)
 			end
-			if IsControlPressed(0, MoveDownControl) then
+			if IsControlPressed(0, DownControl) then
 				SetEntityCoordsNoOffset(entity, x, y, z - Speed)
 			end
 
@@ -155,18 +155,18 @@ CreateThread(function()
 				TaskStandStill(entity, -1)
 
 				-- Move forward/backward
-				if IsControlPressed(0, MoveForwardControl) then
+				if IsControlPressed(0, ForwardControl) then
 					SetEntityCoordsNoOffset(entity, x + dx, y + dy, z)
 				end
-				if IsControlPressed(0, MoveBackwardControl) then
+				if IsControlPressed(0, BackwardControl) then
 					SetEntityCoordsNoOffset(entity, x - dx, y - dy, z)
 				end
 
 				-- Rotate heading
-				if IsControlPressed(0, MoveLeftControl) then
+				if IsControlPressed(0, LeftControl) then
 					SetEntityHeading(entity, h + 1)
 				end
-				if IsControlPressed(0, MoveRightControl) then
+				if IsControlPressed(0, RightControl) then
 					SetEntityHeading(entity, h - 1)
 				end
 			else
@@ -178,22 +178,22 @@ CreateThread(function()
 				SetEntityHeading(entity, 180.0)
 
 				-- Move North
-				if IsControlPressed(0, MoveForwardControl) then
+				if IsControlPressed(0, ForwardControl) then
 					SetEntityCoordsNoOffset(entity, x, y + Speed, z)
 				end
 
 				-- Move South
-				if IsControlPressed(0, MoveBackwardControl) then
+				if IsControlPressed(0, BackwardControl) then
 					SetEntityCoordsNoOffset(entity, x, y - Speed, z)
 				end
 
 				-- Move East
-				if IsControlPressed(0, MoveLeftControl) then
+				if IsControlPressed(0, LeftControl) then
 					SetEntityCoordsNoOffset(entity, x - Speed, y, z)
 				end
 
 				-- Move West
-				if IsControlPressed(0, MoveRightControl) then
+				if IsControlPressed(0, RightControl) then
 					SetEntityCoordsNoOffset(entity, x + Speed, y, z)
 				end
 			end
