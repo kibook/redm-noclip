@@ -10,14 +10,19 @@ local CONTROL_SPACEBAR = 0xD9D0E1C0
 local CONTROL_SHIFT = 0x8FFC75D6
 local CONTROL_Q = 0xDE794E3E
 
--- Noclip control modes
-local ABSOLUTE_MODE = 0
-local RELATIVE_MODE = 1
-
 -- === CONFIGURATION ===
 
--- Control to toggle noclip mode on/off
-local NoClipToggleControl = CONTROL_F6
+-- Configurable controls
+local ToggleControl        = CONTROL_F6
+local IncreaseSpeedControl = CONTROL_PAGE_UP
+local DecreaseSpeedControl = CONTROL_PAGE_DOWN
+local MoveUpControl        = CONTROL_SPACEBAR
+local MoveDownControl      = CONTROL_SHIFT
+local MoveForwardControl   = CONTROL_W
+local MoveBackwardControl  = CONTROL_S
+local MoveLeftControl      = CONTROL_A
+local MoveRightControl     = CONTROL_D
+local ToggleModeControl    = CONTROL_Q
 
 -- Default speed
 local Speed = 0.1
@@ -42,7 +47,7 @@ local MinSpeed = 0.1
 --
 local RelativeMode = true
 
--- == END OF CONFIGURATION ===
+-- === END OF CONFIGURATION ===
 
 local Enabled = false
 
@@ -84,7 +89,7 @@ CreateThread(function()
 	while true do
 		Wait(0)
 
-		if IsControlJustPressed(0, NoClipToggleControl) then
+		if IsControlJustPressed(0, ToggleControl) then
 			ToggleNoClip()
 		end
 
@@ -107,24 +112,24 @@ CreateThread(function()
 			DrawText(string.format('NoClip Speed: %.1f', Speed), 0.5, 0.90, true)
 
 			-- Change noclip control mode
-			if IsControlJustPressed(0, CONTROL_Q) then
+			if IsControlJustPressed(0, ToggleModeControl) then
 				RelativeMode = not RelativeMode
 			end
 
 			-- Increase/decrease speed
-			if IsControlPressed(0, CONTROL_PAGE_UP) then
+			if IsControlPressed(0, IncreaseSpeedControl) then
 				Speed = Speed + 0.1
 			end
-			if IsControlPressed(0, CONTROL_PAGE_DOWN) then
+			if IsControlPressed(0, DecreaseSpeedControl) then
 				Speed = Speed - 0.1
 			end
 
 			-- Move up/down
-			if IsControlPressed(0, CONTROL_SHIFT) then
-				SetEntityCoordsNoOffset(entity, x, y, z - Speed)
-			end
-			if IsControlPressed(0, CONTROL_SPACEBAR) then
+			if IsControlPressed(0, MoveUpControl) then
 				SetEntityCoordsNoOffset(entity, x, y, z + Speed)
+			end
+			if IsControlPressed(0, MoveDownControl) then
+				SetEntityCoordsNoOffset(entity, x, y, z - Speed)
 			end
 
 			if RelativeMode then
@@ -150,18 +155,18 @@ CreateThread(function()
 				TaskStandStill(entity, -1)
 
 				-- Move forward/backward
-				if IsControlPressed(0, CONTROL_W) then
+				if IsControlPressed(0, MoveForwardControl) then
 					SetEntityCoordsNoOffset(entity, x + dx, y + dy, z)
 				end
-				if IsControlPressed(0, CONTROL_S) then
+				if IsControlPressed(0, MoveBackwardControl) then
 					SetEntityCoordsNoOffset(entity, x - dx, y - dy, z)
 				end
 
 				-- Rotate heading
-				if IsControlPressed(0, CONTROL_A) then
+				if IsControlPressed(0, MoveLeftControl) then
 					SetEntityHeading(entity, h + 1)
 				end
-				if IsControlPressed(0, CONTROL_D) then
+				if IsControlPressed(0, MoveRightControl) then
 					SetEntityHeading(entity, h - 1)
 				end
 			else
@@ -173,22 +178,22 @@ CreateThread(function()
 				SetEntityHeading(entity, 180.0)
 
 				-- Move North
-				if IsControlPressed(0, CONTROL_W) then
+				if IsControlPressed(0, MoveForwardControl) then
 					SetEntityCoordsNoOffset(entity, x, y + Speed, z)
 				end
 
 				-- Move South
-				if IsControlPressed(0, CONTROL_S) then
+				if IsControlPressed(0, MoveBackwardControl) then
 					SetEntityCoordsNoOffset(entity, x, y - Speed, z)
 				end
 
 				-- Move East
-				if IsControlPressed(0, CONTROL_A) then
+				if IsControlPressed(0, MoveLeftControl) then
 					SetEntityCoordsNoOffset(entity, x - Speed, y, z)
 				end
 
 				-- Move West
-				if IsControlPressed(0, CONTROL_D) then
+				if IsControlPressed(0, MoveRightControl) then
 					SetEntityCoordsNoOffset(entity, x + Speed, y, z)
 				end
 			end
