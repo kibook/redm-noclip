@@ -132,6 +132,16 @@ CreateThread(function()
 				SetEntityCoordsNoOffset(entity, x, y, z - Speed)
 			end
 
+			-- FIXME:
+			-- Peds face the opposite direction of their heading
+			-- when not playing any animation. This can make
+			-- orienting yourself in noclip mode confusing.
+			--
+			-- This function makes the ped face the right way while
+			-- not moving in noclip mode, but while moving they
+			-- still flip around.
+			TaskStandStill(entity, -1)
+
 			if RelativeMode then
 				local h = GetEntityHeading(entity)
 
@@ -143,16 +153,6 @@ CreateThread(function()
 				local r = -h * math.pi / 180
 				local dx = Speed * math.sin(r)
 				local dy = Speed * math.cos(r)
-
-				-- FIXME:
-				-- Peds face the opposite direction of their heading
-				-- when not playing any animation. This can make
-				-- orienting yourself in noclip mode confusing.
-				--
-				-- This function makes the ped face the right way while
-				-- not moving in noclip mode, but while moving they
-				-- still flip around.
-				TaskStandStill(entity, -1)
 
 				-- Move forward/backward
 				if IsControlPressed(0, ForwardControl) then
@@ -174,8 +174,7 @@ CreateThread(function()
 				DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f', x, y, z), 0.01, 0.3, false)
 				DrawText('W/A/S/D - Move, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Relative mode', 0.5, 0.95, true)
 
-				ClearPedTasksImmediately(entity, false, false)
-				SetEntityHeading(entity, 180.0)
+				SetEntityHeading(entity, 0.0)
 
 				-- Move North
 				if IsControlPressed(0, ForwardControl) then
