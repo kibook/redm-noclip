@@ -97,6 +97,18 @@ CreateThread(function()
 			-- Get the entity we want to control in noclip mode
 			local entity = GetNoClipTarget()
 
+			FreezeEntityPosition(entity, true)
+
+			-- FIXME:
+			-- Peds face the opposite direction of their heading
+			-- when not playing any animation. This can make
+			-- orienting yourself in noclip mode confusing.
+			--
+			-- This function makes the ped face the right way while
+			-- not moving in noclip mode, but while moving they
+			-- still flip around.
+			TaskStandStill(entity, -1)
+
 			-- Get the position and heading of the entity
 			local x, y, z = table.unpack(GetEntityCoords(entity))
 
@@ -131,16 +143,6 @@ CreateThread(function()
 			if IsControlPressed(0, DownControl) then
 				SetEntityCoordsNoOffset(entity, x, y, z - Speed)
 			end
-
-			-- FIXME:
-			-- Peds face the opposite direction of their heading
-			-- when not playing any animation. This can make
-			-- orienting yourself in noclip mode confusing.
-			--
-			-- This function makes the ped face the right way while
-			-- not moving in noclip mode, but while moving they
-			-- still flip around.
-			TaskStandStill(entity, -1)
 
 			if RelativeMode then
 				local h = GetEntityHeading(entity)
