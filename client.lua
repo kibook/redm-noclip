@@ -1,5 +1,5 @@
 -- Control names
-local INPUT_PHOTO_MODE            = 0x3C0A40F2 -- F6
+local INPUT_PHOTO_MODE_PC         = 0x35957F6C -- F6
 local INPUT_CREATOR_LT            = 0x446258B6 -- Page Up
 local INPUT_CREATOR_RT            = 0x3C3DD371 -- Page Down
 local INPUT_MOVE_UP_ONLY          = 0x8FD015D8 -- W
@@ -13,7 +13,7 @@ local INPUT_COVER                 = 0xDE794E3E -- Q
 -- === CONFIGURATION ===
 
 -- Configurable controls
-local ToggleControl        = INPUT_PHOTO_MODE
+local ToggleControl        = INPUT_PHOTO_MODE_PC
 local IncreaseSpeedControl = INPUT_CREATOR_LT
 local DecreaseSpeedControl = INPUT_CREATOR_RT
 local UpControl            = INPUT_JUMP
