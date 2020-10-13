@@ -1,46 +1,6 @@
--- === CONFIGURATION ===
-
--- Configurable controls
-local ToggleControl        = 0x35957F6C -- F6
-local IncreaseSpeedControl = 0x446258B6 -- Page Up
-local DecreaseSpeedControl = 0x3C3DD371 -- Page Down
-local UpControl            = 0xD9D0E1C0 -- Spacebar
-local DownControl          = 0x8FFC75D6 -- Shift
-local ForwardControl       = 0x8FD015D8 -- W
-local BackwardControl      = 0xD27782E3 -- S
-local LeftControl          = 0x7065027D -- A
-local RightControl         = 0xB4E465B4 -- D
-local ToggleModeControl    = 0xDE794E3E -- Q
-
--- Max and min speeds
-local MaxSpeed = 10.0
-local MinSpeed = 0.1
-
--- How much speed increases by when speed up/down controls are pressed
-local SpeedIncrement = 0.1
-
--- Default speed
-local Speed = 0.1
-
--- Whether to enable relative mode by default.
---
--- false: Movement is based on the cardinal directions.
--- 	W = North
--- 	S = South
--- 	A = East
--- 	D = West
---
--- true: Movement is based on the current heading.
--- 	W = forward
--- 	S = backwards
--- 	A = rotate left
--- 	D = rotate right
---
-local RelativeMode = true
-
--- === END OF CONFIGURATION ===
-
 local Enabled = false
+local RelativeMode = Config.RelativeMode
+local Speed = Config.Speed
 
 -- Return the player or their vehicle/mount if one exists
 function GetNoClipTarget()
@@ -95,7 +55,7 @@ CreateThread(function()
 	while true do
 		Wait(0)
 
-		if IsControlJustPressed(0, ToggleControl) then
+		if IsControlJustPressed(0, Config.ToggleControl) then
 			ToggleNoClip()
 		end
 
@@ -119,34 +79,34 @@ CreateThread(function()
 			local x, y, z = table.unpack(GetEntityCoords(entity))
 
 			-- Cap the speed between MinSpeed and MaxSpeed
-			if Speed > MaxSpeed then
-				Speed = MaxSpeed
+			if Speed > Config.MaxSpeed then
+				Speed = Config.MaxSpeed
 			end
-			if Speed < MinSpeed then
-				Speed = MinSpeed
+			if Speed < Config.MinSpeed then
+				Speed = Config.MinSpeed
 			end
 
 			-- Print the current noclip speed on screen
 			DrawText(string.format('NoClip Speed: %.1f', Speed), 0.5, 0.90, true)
 
 			-- Change noclip control mode
-			if IsControlJustPressed(0, ToggleModeControl) then
+			if IsControlJustPressed(0, Config.ToggleModeControl) then
 				RelativeMode = not RelativeMode
 			end
 
 			-- Increase/decrease speed
-			if IsControlPressed(0, IncreaseSpeedControl) then
-				Speed = Speed + SpeedIncrement
+			if IsControlPressed(0, Config.IncreaseSpeedControl) then
+				Speed = Speed + Config.SpeedIncrement
 			end
-			if IsControlPressed(0, DecreaseSpeedControl) then
-				Speed = Speed - SpeedIncrement
+			if IsControlPressed(0, Config.DecreaseSpeedControl) then
+				Speed = Speed - Config.SpeedIncrement
 			end
 
 			-- Move up/down
-			if IsControlPressed(0, UpControl) then
+			if IsControlPressed(0, Config.UpControl) then
 				SetEntityCoordsNoOffset(entity, x, y, z + Speed)
 			end
-			if IsControlPressed(0, DownControl) then
+			if IsControlPressed(0, Config.DownControl) then
 				SetEntityCoordsNoOffset(entity, x, y, z - Speed)
 			end
 
@@ -163,18 +123,18 @@ CreateThread(function()
 				local dy = Speed * math.cos(r)
 
 				-- Move forward/backward
-				if IsControlPressed(0, ForwardControl) then
+				if IsControlPressed(0, Config.ForwardControl) then
 					SetEntityCoordsNoOffset(entity, x + dx, y + dy, z)
 				end
-				if IsControlPressed(0, BackwardControl) then
+				if IsControlPressed(0, Config.BackwardControl) then
 					SetEntityCoordsNoOffset(entity, x - dx, y - dy, z)
 				end
 
 				-- Rotate heading
-				if IsControlPressed(0, LeftControl) then
+				if IsControlPressed(0, Config.LeftControl) then
 					SetEntityHeading(entity, h + 1)
 				end
-				if IsControlPressed(0, RightControl) then
+				if IsControlPressed(0, Config.RightControl) then
 					SetEntityHeading(entity, h - 1)
 				end
 			else
@@ -185,22 +145,22 @@ CreateThread(function()
 				SetEntityHeading(entity, 0.0)
 
 				-- Move North
-				if IsControlPressed(0, ForwardControl) then
+				if IsControlPressed(0, Config.ForwardControl) then
 					SetEntityCoordsNoOffset(entity, x, y + Speed, z)
 				end
 
 				-- Move South
-				if IsControlPressed(0, BackwardControl) then
+				if IsControlPressed(0, Config.BackwardControl) then
 					SetEntityCoordsNoOffset(entity, x, y - Speed, z)
 				end
 
 				-- Move East
-				if IsControlPressed(0, LeftControl) then
+				if IsControlPressed(0, Config.LeftControl) then
 					SetEntityCoordsNoOffset(entity, x - Speed, y, z)
 				end
 
 				-- Move West
-				if IsControlPressed(0, RightControl) then
+				if IsControlPressed(0, Config.RightControl) then
 					SetEntityCoordsNoOffset(entity, x + Speed, y, z)
 				end
 			end
