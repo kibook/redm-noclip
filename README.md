@@ -1,6 +1,6 @@
 # RedM NoClip script
 
-NoClip script for RedM, based on https://github.com/RCPisAwesome/RedMRCPNoClip.
+NoClip script for RedM. Based on https://github.com/RCPisAwesome/RedMRCPNoClip.
 
 ## Features
 
