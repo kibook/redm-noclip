@@ -1,28 +1,16 @@
--- Control names
-local INPUT_PHOTO_MODE_PC         = 0x35957F6C -- F6
-local INPUT_CREATOR_LT            = 0x446258B6 -- Page Up
-local INPUT_CREATOR_RT            = 0x3C3DD371 -- Page Down
-local INPUT_MOVE_UP_ONLY          = 0x8FD015D8 -- W
-local INPUT_MOVE_DOWN_ONLY        = 0xD27782E3 -- S
-local INPUT_MOVE_LEFT_ONLY        = 0x7065027D -- A
-local INPUT_MOVE_RIGHT_ONLY       = 0xB4E465B4 -- D
-local INPUT_JUMP                  = 0xD9D0E1C0 -- Spacebar
-local INPUT_SPRINT                = 0x8FFC75D6 -- Shift
-local INPUT_COVER                 = 0xDE794E3E -- Q
-
 -- === CONFIGURATION ===
 
 -- Configurable controls
-local ToggleControl        = INPUT_PHOTO_MODE_PC
-local IncreaseSpeedControl = INPUT_CREATOR_LT
-local DecreaseSpeedControl = INPUT_CREATOR_RT
-local UpControl            = INPUT_JUMP
-local DownControl          = INPUT_SPRINT
-local ForwardControl       = INPUT_MOVE_UP_ONLY
-local BackwardControl      = INPUT_MOVE_DOWN_ONLY
-local LeftControl          = INPUT_MOVE_LEFT_ONLY
-local RightControl         = INPUT_MOVE_RIGHT_ONLY
-local ToggleModeControl    = INPUT_COVER
+local ToggleControl        = 0x35957F6C -- F6
+local IncreaseSpeedControl = 0x446258B6 -- Page Up
+local DecreaseSpeedControl = 0x3C3DD371 -- Page Down
+local UpControl            = 0xD9D0E1C0 -- Spacebar
+local DownControl          = 0x8FFC75D6 -- Shift
+local ForwardControl       = 0x8FD015D8 -- W
+local BackwardControl      = 0xD27782E3 -- S
+local LeftControl          = 0x7065027D -- A
+local RightControl         = 0xB4E465B4 -- D
+local ToggleModeControl    = 0xDE794E3E -- Q
 
 -- Default speed
 local Speed = 0.1
