@@ -12,12 +12,15 @@ local LeftControl          = 0x7065027D -- A
 local RightControl         = 0xB4E465B4 -- D
 local ToggleModeControl    = 0xDE794E3E -- Q
 
--- Default speed
-local Speed = 0.1
-
 -- Max and min speeds
 local MaxSpeed = 10.0
 local MinSpeed = 0.1
+
+-- How much speed increases by when speed up/down controls are pressed
+local SpeedIncrement = 0.1
+
+-- Default speed
+local Speed = 0.1
 
 -- Whether to enable relative mode by default.
 --
@@ -47,17 +50,25 @@ function GetNoClipTarget()
 	return (veh == 0 and (mnt == 0 and ped or mnt) or veh)
 end
 
-function ToggleNoClip()
+function EnableNoClip()
 	local entity = GetNoClipTarget()
+	ClearPedTasksImmediately(entity, false, false)
+	FreezeEntityPosition(entity, true)
+	Enabled = true
+end
 
+function DisableNoClip()
+	local entity = GetNoClipTarget()
+	ClearPedTasksImmediately(entity, false, false)
+	FreezeEntityPosition(entity, false)
+	Enabled = false
+end
+
+function ToggleNoClip()
 	if Enabled then
-		ClearPedTasksImmediately(entity, false, false)
-		FreezeEntityPosition(entity, false)
-		Enabled = false
+		DisableNoClip()
 	else
-		ClearPedTasksImmediately(entity, false, false)
-		FreezeEntityPosition(entity, true)
-		Enabled = true
+		EnableNoClip()
 	end
 end
 
@@ -71,6 +82,12 @@ function DrawText(text, x, y, centred)
 	SetTextFontForCurrentCommand(0)
 	DisplayText(CreateVarString(10, "LITERAL_STRING", text), x, y)
 end
+
+AddEventHandler('onResourceStop', function(resourceName)
+	if GetCurrentResourceName() == resourceName and Enabled then
+		DisableNoClip()
+	end
+end)
 
 CreateThread(function()
 	TriggerEvent('chat:addSuggestion', '/noclip', 'Toggle noclip mode', {})
@@ -119,10 +136,10 @@ CreateThread(function()
 
 			-- Increase/decrease speed
 			if IsControlPressed(0, IncreaseSpeedControl) then
-				Speed = Speed + 0.1
+				Speed = Speed + SpeedIncrement
 			end
 			if IsControlPressed(0, DecreaseSpeedControl) then
-				Speed = Speed - 0.1
+				Speed = Speed - SpeedIncrement
 			end
 
 			-- Move up/down
