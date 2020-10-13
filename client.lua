@@ -62,7 +62,6 @@ function ToggleNoClip()
 end
 
 RegisterCommand('noclip', ToggleNoClip)
-TriggerEvent('chat:addSuggestion', '/noclip', 'Toggle noclip mode', {})
 
 function DrawText(text, x, y, centred)
 	SetTextScale(0.35, 0.35)
@@ -74,6 +73,8 @@ function DrawText(text, x, y, centred)
 end
 
 CreateThread(function()
+	TriggerEvent('chat:addSuggestion', '/noclip', 'Toggle noclip mode', {})
+
 	while true do
 		Wait(0)
 
