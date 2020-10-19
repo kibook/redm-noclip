@@ -65,18 +65,9 @@ CreateThread(function()
 
 			FreezeEntityPosition(entity, true)
 
-			-- FIXME:
-			-- Peds face the opposite direction of their heading
-			-- when not playing any animation. This can make
-			-- orienting yourself in noclip mode confusing.
-			--
-			-- This function makes the ped face the right way while
-			-- not moving in noclip mode, but while moving they
-			-- still flip around.
-			TaskStandStill(entity, -1)
-
 			-- Get the position and heading of the entity
 			local x, y, z = table.unpack(GetEntityCoords(entity))
+			local h = GetEntityHeading(entity)
 
 			-- Cap the speed between MinSpeed and MaxSpeed
 			if Speed > Config.MaxSpeed then
@@ -104,15 +95,13 @@ CreateThread(function()
 
 			-- Move up/down
 			if IsControlPressed(0, Config.UpControl) then
-				SetEntityCoordsNoOffset(entity, x, y, z + Speed)
+				z = z + Speed
 			end
 			if IsControlPressed(0, Config.DownControl) then
-				SetEntityCoordsNoOffset(entity, x, y, z - Speed)
+				z = z - Speed
 			end
 
 			if RelativeMode then
-				local h = GetEntityHeading(entity)
-
 				-- Print the coordinates, heading and controls on screen
 				DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f\nHeading: %.0f', x, y, z, h), 0.01, 0.3, false)
 				DrawText('W/S - Move, A/D - Rotate, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Absolute mode', 0.5, 0.95, true)
@@ -124,46 +113,51 @@ CreateThread(function()
 
 				-- Move forward/backward
 				if IsControlPressed(0, Config.ForwardControl) then
-					SetEntityCoordsNoOffset(entity, x + dx, y + dy, z)
+					x = x + dx
+					y = y + dy
 				end
 				if IsControlPressed(0, Config.BackwardControl) then
-					SetEntityCoordsNoOffset(entity, x - dx, y - dy, z)
+					x = x - dx
+					y = y - dy
 				end
 
 				-- Rotate heading
 				if IsControlPressed(0, Config.LeftControl) then
-					SetEntityHeading(entity, h + 1)
+					h = h + 1
 				end
 				if IsControlPressed(0, Config.RightControl) then
-					SetEntityHeading(entity, h - 1)
+					h = h - 1
 				end
 			else
 				-- Print the coordinates and controls on screen
 				DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f', x, y, z), 0.01, 0.3, false)
 				DrawText('W/A/S/D - Move, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Relative mode', 0.5, 0.95, true)
 
-				SetEntityHeading(entity, 0.0)
+				h = 0.0
 
 				-- Move North
 				if IsControlPressed(0, Config.ForwardControl) then
-					SetEntityCoordsNoOffset(entity, x, y + Speed, z)
+					y = y + Speed
 				end
 
 				-- Move South
 				if IsControlPressed(0, Config.BackwardControl) then
-					SetEntityCoordsNoOffset(entity, x, y - Speed, z)
+					y = y - Speed
 				end
 
 				-- Move East
 				if IsControlPressed(0, Config.LeftControl) then
-					SetEntityCoordsNoOffset(entity, x - Speed, y, z)
+					x = x - Speed
 				end
 
 				-- Move West
 				if IsControlPressed(0, Config.RightControl) then
-					SetEntityCoordsNoOffset(entity, x + Speed, y, z)
+					x = x + Speed
 				end
 			end
+
+			SetEntityCoordsNoOffset(entity, x, y, z)
+			SetEntityHeading(entity, h)
 		end
 	end
 end)
