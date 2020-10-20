@@ -10,10 +10,20 @@ function GetNoClipTarget()
 	return (veh == 0 and (mnt == 0 and ped or mnt) or veh)
 end
 
+-- Translate 180 degrees for peds, as their models face backwards
+function TranslateHeading(entity, h)
+	if GetEntityType(entity) == 1 then
+		return (h + 180) % 360
+	else
+		return h
+	end
+end
+
 function EnableNoClip()
 	local entity = GetNoClipTarget()
 	ClearPedTasksImmediately(entity, false, false)
 	FreezeEntityPosition(entity, true)
+	SetEntityHeading(entity, TranslateHeading(entity, GetEntityHeading(entity)))
 	Enabled = true
 end
 
@@ -21,6 +31,7 @@ function DisableNoClip()
 	local entity = GetNoClipTarget()
 	ClearPedTasksImmediately(entity, false, false)
 	FreezeEntityPosition(entity, false)
+	SetEntityHeading(entity, TranslateHeading(entity, GetEntityHeading(entity)))
 	Enabled = false
 end
 
@@ -67,7 +78,7 @@ CreateThread(function()
 
 			-- Get the position and heading of the entity
 			local x, y, z = table.unpack(GetEntityCoords(entity))
-			local h = GetEntityHeading(entity)
+			local h = TranslateHeading(entity, GetEntityHeading(entity))
 
 			-- Cap the speed between MinSpeed and MaxSpeed
 			if Speed > Config.MaxSpeed then
@@ -157,7 +168,7 @@ CreateThread(function()
 			end
 
 			SetEntityCoordsNoOffset(entity, x, y, z)
-			SetEntityHeading(entity, h)
+			SetEntityHeading(entity, TranslateHeading(entity, h))
 		end
 	end
 end)
