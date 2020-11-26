@@ -2,6 +2,8 @@ local Enabled = false
 local RelativeMode = Config.RelativeMode
 local Speed = Config.Speed
 
+RegisterNetEvent('noclip:toggle')
+
 -- Return the player or their vehicle/mount if one exists
 function GetNoClipTarget()
 	local ped = PlayerPedId()
@@ -44,6 +46,8 @@ function ToggleNoClip()
 end
 
 RegisterCommand('noclip', ToggleNoClip)
+
+AddEventHandler('noclip:toggle', ToggleNoClip)
 
 function DrawText(text, x, y, centred)
 	SetTextScale(0.35, 0.35)
