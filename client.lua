@@ -1,6 +1,7 @@
 local Enabled = false
 local RelativeMode = Config.RelativeMode
 local Speed = Config.Speed
+local FollowCam = Config.FollowCam
 
 RegisterNetEvent('noclip:toggle')
 
@@ -70,11 +71,18 @@ CreateThread(function()
 	while true do
 		Wait(0)
 
-		if IsControlJustPressed(0, Config.ToggleControl) then
+		if IsDisabledControlJustPressed(0, Config.ToggleControl) then
 			ToggleNoClip()
 		end
 
 		if Enabled then
+			-- Disable all controls except a few while in noclip mode
+			DisableAllControlActions(0)
+			EnableControlAction(0, 0x4A903C11) -- FrontendPauseAlternate
+			EnableControlAction(0, 0x9720fcee) -- MpTextChatAll
+			EnableControlAction(0, 0xA987235F) -- LookLr
+			EnableControlAction(0, 0xD2047988) -- LookUd
+
 			-- Get the entity we want to control in noclip mode
 			local entity = GetNoClipTarget()
 
@@ -96,30 +104,35 @@ CreateThread(function()
 			DrawText(string.format('NoClip Speed: %.1f', Speed), 0.5, 0.90, true)
 
 			-- Change noclip control mode
-			if IsControlJustPressed(0, Config.ToggleModeControl) then
+			if IsDisabledControlJustPressed(0, Config.ToggleModeControl) then
 				RelativeMode = not RelativeMode
 			end
 
 			-- Increase/decrease speed
-			if IsControlPressed(0, Config.IncreaseSpeedControl) then
+			if IsDisabledControlPressed(0, Config.IncreaseSpeedControl) then
 				Speed = Speed + Config.SpeedIncrement
 			end
-			if IsControlPressed(0, Config.DecreaseSpeedControl) then
+			if IsDisabledControlPressed(0, Config.DecreaseSpeedControl) then
 				Speed = Speed - Config.SpeedIncrement
 			end
 
 			-- Move up/down
-			if IsControlPressed(0, Config.UpControl) then
+			if IsDisabledControlPressed(0, Config.UpControl) then
 				z = z + Speed
 			end
-			if IsControlPressed(0, Config.DownControl) then
+			if IsDisabledControlPressed(0, Config.DownControl) then
 				z = z - Speed
 			end
 
 			if RelativeMode then
 				-- Print the coordinates, heading and controls on screen
 				DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f\nHeading: %.0f', x, y, z, h), 0.01, 0.3, false)
-				DrawText('W/S - Move, A/D - Rotate, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Absolute mode', 0.5, 0.95, true)
+
+				if FollowCam then
+					DrawText('W/S - Move, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Absolute mode, H - Disable Follow Cam', 0.5, 0.95, true)
+				else
+					DrawText('W/S - Move, A/D - Rotate, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Absolute mode, H - Enable Follow Cam', 0.5, 0.95, true)
+				end
 
 				-- Calculate the change in x and y based on the speed and heading.
 				local r = -h * math.pi / 180
@@ -127,21 +140,30 @@ CreateThread(function()
 				local dy = Speed * math.cos(r)
 
 				-- Move forward/backward
-				if IsControlPressed(0, Config.ForwardControl) then
+				if IsDisabledControlPressed(0, Config.ForwardControl) then
 					x = x + dx
 					y = y + dy
 				end
-				if IsControlPressed(0, Config.BackwardControl) then
+				if IsDisabledControlPressed(0, Config.BackwardControl) then
 					x = x - dx
 					y = y - dy
 				end
 
-				-- Rotate heading
-				if IsControlPressed(0, Config.LeftControl) then
-					h = h + 1
+				if IsDisabledControlJustPressed(0, Config.FollowCamControl) then
+					FollowCam = not FollowCam
 				end
-				if IsControlPressed(0, Config.RightControl) then
-					h = h - 1
+
+				-- Rotate heading
+				if FollowCam then
+					local rot = GetGameplayCamRot(2)
+					h = rot.z
+				else
+					if IsDisabledControlPressed(0, Config.LeftControl) then
+						h = h + 1
+					end
+					if IsDisabledControlPressed(0, Config.RightControl) then
+						h = h - 1
+					end
 				end
 			else
 				-- Print the coordinates and controls on screen
@@ -151,22 +173,22 @@ CreateThread(function()
 				h = 0.0
 
 				-- Move North
-				if IsControlPressed(0, Config.ForwardControl) then
+				if IsDisabledControlPressed(0, Config.ForwardControl) then
 					y = y + Speed
 				end
 
 				-- Move South
-				if IsControlPressed(0, Config.BackwardControl) then
+				if IsDisabledControlPressed(0, Config.BackwardControl) then
 					y = y - Speed
 				end
 
 				-- Move East
-				if IsControlPressed(0, Config.LeftControl) then
+				if IsDisabledControlPressed(0, Config.LeftControl) then
 					x = x - Speed
 				end
 
 				-- Move West
-				if IsControlPressed(0, Config.RightControl) then
+				if IsDisabledControlPressed(0, Config.RightControl) then
 					x = x + Speed
 				end
 			end

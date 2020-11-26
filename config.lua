@@ -11,6 +11,7 @@ Config.BackwardControl      = 0xD27782E3 -- S
 Config.LeftControl          = 0x7065027D -- A
 Config.RightControl         = 0xB4E465B4 -- D
 Config.ToggleModeControl    = 0xDE794E3E -- Q
+Config.FollowCamControl     = 0x24978A28 -- H
 
 -- Maximum speed
 Config.MaxSpeed = 10.0
@@ -39,3 +40,6 @@ Config.Speed = 0.1
 -- 	D = rotate right
 --
 Config.RelativeMode = true
+
+-- Whether to enable follow cam mode by default.
+Config.FollowCam = false
