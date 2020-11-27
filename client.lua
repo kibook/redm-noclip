@@ -83,6 +83,8 @@ CreateThread(function()
 			EnableControlAction(0, 0xA987235F) -- LookLr
 			EnableControlAction(0, 0xD2047988) -- LookUd
 
+			DisableFirstPersonCamThisFrame()
+
 			-- Get the entity we want to control in noclip mode
 			local entity = GetNoClipTarget()
 
