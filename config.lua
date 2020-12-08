@@ -11,7 +11,7 @@ Config.BackwardControl      = 0xD27782E3 -- S
 Config.LeftControl          = 0x7065027D -- A
 Config.RightControl         = 0xB4E465B4 -- D
 Config.ToggleModeControl    = 0xDE794E3E -- Q
-Config.FollowCamControl     = 0x24978A28 -- H
+Config.FollowCamControl     = 0xC5CF41B2 -- H
 
 -- Maximum speed
 Config.MaxSpeed = 10.0

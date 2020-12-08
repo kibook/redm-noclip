@@ -82,6 +82,8 @@ CreateThread(function()
 			EnableControlAction(0, 0x9720fcee) -- MpTextChatAll
 			EnableControlAction(0, 0xA987235F) -- LookLr
 			EnableControlAction(0, 0xD2047988) -- LookUd
+			EnableControlAction(0, 0x3D99EEC6) -- HorseGunLr
+			EnableControlAction(0, 0xBFF476F9) -- HorseGunUd
 
 			DisableFirstPersonCamThisFrame()
 
