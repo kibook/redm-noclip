@@ -59,9 +59,42 @@ function DrawText(text, x, y, centred)
 	DisplayText(CreateVarString(10, "LITERAL_STRING", text), x, y)
 end
 
+function SaveSettings()
+	SetResourceKvp('relativeMode', tostring(RelativeMode))
+	SetResourceKvp('followCam', tostring(FollowCam))
+	SetResourceKvp('speed', tostring(Speed))
+end
+
+function LoadSettings()
+	local relativeMode = GetResourceKvpString('relativeMode')
+	if relativeMode ~= nil then
+		RelativeMode = relativeMode == 'true'
+	end
+
+	local followCam = GetResourceKvpString('followCam')
+	if followCam ~= nil then
+		FollowCam = followCam == 'true'
+	end
+
+	local speed = GetResourceKvpString('speed')
+	if speed ~= nil then
+		Speed = tonumber(speed)
+	end
+end
+
+AddEventHandler('onResourceStart', function(resourceName)
+	if GetCurrentResourceName() == resourceName then
+		LoadSettings()
+	end
+end)
+
 AddEventHandler('onResourceStop', function(resourceName)
-	if GetCurrentResourceName() == resourceName and Enabled then
-		DisableNoClip()
+	if GetCurrentResourceName() == resourceName then
+		if Enabled then
+			DisableNoClip()
+		end
+
+		SaveSettings()
 	end
 end)
 
