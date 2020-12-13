@@ -82,12 +82,6 @@ function LoadSettings()
 	end
 end
 
-AddEventHandler('onResourceStart', function(resourceName)
-	if GetCurrentResourceName() == resourceName then
-		LoadSettings()
-	end
-end)
-
 AddEventHandler('onResourceStop', function(resourceName)
 	if GetCurrentResourceName() == resourceName then
 		if Enabled then
@@ -100,6 +94,8 @@ end)
 
 CreateThread(function()
 	TriggerEvent('chat:addSuggestion', '/noclip', 'Toggle noclip mode', {})
+
+	LoadSettings()
 
 	while true do
 		Wait(0)
