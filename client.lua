@@ -59,12 +59,6 @@ function DrawText(text, x, y, centred)
 	DisplayText(CreateVarString(10, "LITERAL_STRING", text), x, y)
 end
 
-function SaveSettings()
-	SetResourceKvp('relativeMode', tostring(RelativeMode))
-	SetResourceKvp('followCam', tostring(FollowCam))
-	SetResourceKvp('speed', tostring(Speed))
-end
-
 function LoadSettings()
 	local relativeMode = GetResourceKvpString('relativeMode')
 	if relativeMode ~= nil then
@@ -82,13 +76,24 @@ function LoadSettings()
 	end
 end
 
-AddEventHandler('onResourceStop', function(resourceName)
-	if GetCurrentResourceName() == resourceName then
-		if Enabled then
-			DisableNoClip()
-		end
+function ToggleRelativeMode()
+	RelativeMode = not RelativeMode
+	SetResourceKvp('relativeMode', tostring(RelativeMode))
+end
 
-		SaveSettings()
+function ToggleFollowCam()
+	FollowCam = not FollowCam
+	SetResourceKvp('followCam', tostring(FollowCam))
+end
+
+function SetSpeed(value)
+	Speed = value
+	SetResourceKvp('speed', tostring(Speed))
+end
+
+AddEventHandler('onResourceStop', function(resourceName)
+	if GetCurrentResourceName() == resourceName and Enabled then
+		DisableNoClip()
 	end
 end)
 
@@ -127,10 +132,10 @@ CreateThread(function()
 
 			-- Cap the speed between MinSpeed and MaxSpeed
 			if Speed > Config.MaxSpeed then
-				Speed = Config.MaxSpeed
+				SetSpeed(Config.MaxSpeed)
 			end
 			if Speed < Config.MinSpeed then
-				Speed = Config.MinSpeed
+				SetSpeed(Config.MinSpeed)
 			end
 
 			-- Print the current noclip speed on screen
@@ -138,15 +143,15 @@ CreateThread(function()
 
 			-- Change noclip control mode
 			if IsDisabledControlJustPressed(0, Config.ToggleModeControl) then
-				RelativeMode = not RelativeMode
+				ToggleRelativeMode()
 			end
 
 			-- Increase/decrease speed
 			if IsDisabledControlPressed(0, Config.IncreaseSpeedControl) then
-				Speed = Speed + Config.SpeedIncrement
+				SetSpeed(Speed + Config.SpeedIncrement)
 			end
 			if IsDisabledControlPressed(0, Config.DecreaseSpeedControl) then
-				Speed = Speed - Config.SpeedIncrement
+				SetSpeed(Speed - Config.SpeedIncrement)
 			end
 
 			-- Move up/down
@@ -183,7 +188,7 @@ CreateThread(function()
 				end
 
 				if IsDisabledControlJustPressed(0, Config.FollowCamControl) then
-					FollowCam = not FollowCam
+					ToggleFollowCam()
 				end
 
 				-- Rotate heading
