@@ -118,6 +118,7 @@ CreateThread(function()
 			EnableControlAction(0, 0xD2047988) -- LookUd
 			EnableControlAction(0, 0x3D99EEC6) -- HorseGunLr
 			EnableControlAction(0, 0xBFF476F9) -- HorseGunUd
+			EnableControlAction(0, 0xCF8A4ECA) -- RevealHud
 
 			DisableFirstPersonCamThisFrame()
 
