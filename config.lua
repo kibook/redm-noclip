@@ -1,17 +1,17 @@
 Config = {}
 
 -- Configurable controls
-Config.ToggleControl        = 0x35957F6C -- F6
-Config.IncreaseSpeedControl = 0x446258B6 -- Page Up
-Config.DecreaseSpeedControl = 0x3C3DD371 -- Page Down
-Config.UpControl            = 0xD9D0E1C0 -- Spacebar
-Config.DownControl          = 0x8FFC75D6 -- Shift
-Config.ForwardControl       = 0x8FD015D8 -- W
-Config.BackwardControl      = 0xD27782E3 -- S
-Config.LeftControl          = 0x7065027D -- A
-Config.RightControl         = 0xB4E465B4 -- D
-Config.ToggleModeControl    = 0xDE794E3E -- Q
-Config.FollowCamControl     = 0xC5CF41B2 -- H
+Config.ToggleControl        = `INPUT_PHOTO_MODE_PC`                     -- F6
+Config.IncreaseSpeedControl = {`INPUT_CREATOR_LT`, `INPUT_PREV_WEAPON`} -- Page Up, Middle Wheel Up
+Config.DecreaseSpeedControl = {`INPUT_CREATOR_RT`, `INPUT_NEXT_WEAPON`} -- Page Down, Middle Wheel Down
+Config.UpControl            = `INPUT_JUMP`                              -- Spacebar
+Config.DownControl          = `INPUT_SPRINT`                            -- Shift
+Config.ForwardControl       = `INPUT_MOVE_UP_ONLY`                      -- W
+Config.BackwardControl      = `INPUT_MOVE_DOWN_ONLY`                    -- S
+Config.LeftControl          = `INPUT_MOVE_LEFT_ONLY`                    -- A
+Config.RightControl         = `INPUT_MOVE_RIGHT_ONLY`                   -- D
+Config.ToggleModeControl    = `INPUT_COVER`                             -- Q
+Config.FollowCamControl     = `INPUT_MULTIPLAYER_PREDATOR_ABILITY`      -- H
 
 -- Maximum speed
 Config.MaxSpeed = 10.0

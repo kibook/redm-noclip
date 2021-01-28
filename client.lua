@@ -91,6 +91,20 @@ function SetSpeed(value)
 	SetResourceKvp('speed', tostring(Speed))
 end
 
+function CheckControls(func, pad, controls)
+	if type(controls) == 'number' then
+		return func(pad, controls)
+	end
+
+	for _, control in ipairs(controls) do
+		if func(pad, control) then
+			return true
+		end
+	end
+
+	return false
+end
+
 AddEventHandler('onResourceStop', function(resourceName)
 	if GetCurrentResourceName() == resourceName and Enabled then
 		DisableNoClip()
@@ -105,7 +119,7 @@ CreateThread(function()
 	while true do
 		Wait(0)
 
-		if IsDisabledControlJustPressed(0, Config.ToggleControl) then
+		if CheckControls(IsDisabledControlJustPressed, 0, Config.ToggleControl) then
 			ToggleNoClip()
 		end
 
@@ -143,23 +157,23 @@ CreateThread(function()
 			DrawText(string.format('NoClip Speed: %.1f', Speed), 0.5, 0.90, true)
 
 			-- Change noclip control mode
-			if IsDisabledControlJustPressed(0, Config.ToggleModeControl) then
+			if CheckControls(IsDisabledControlJustPressed, 0, Config.ToggleModeControl) then
 				ToggleRelativeMode()
 			end
 
 			-- Increase/decrease speed
-			if IsDisabledControlPressed(0, Config.IncreaseSpeedControl) then
+			if CheckControls(IsDisabledControlPressed, 0, Config.IncreaseSpeedControl) then
 				SetSpeed(Speed + Config.SpeedIncrement)
 			end
-			if IsDisabledControlPressed(0, Config.DecreaseSpeedControl) then
+			if CheckControls(IsDisabledControlPressed, 0, Config.DecreaseSpeedControl) then
 				SetSpeed(Speed - Config.SpeedIncrement)
 			end
 
 			-- Move up/down
-			if IsDisabledControlPressed(0, Config.UpControl) then
+			if CheckControls(IsDisabledControlPressed, 0, Config.UpControl) then
 				z = z + Speed
 			end
-			if IsDisabledControlPressed(0, Config.DownControl) then
+			if CheckControls(IsDisabledControlPressed, 0, Config.DownControl) then
 				z = z - Speed
 			end
 
@@ -168,7 +182,7 @@ CreateThread(function()
 				DrawText(string.format('Coordinates:\nX: %.2f\nY: %.2f\nZ: %.2f\nHeading: %.0f', x, y, z, h), 0.01, 0.3, false)
 
 				if FollowCam then
-					DrawText('W/S - Move, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Absolute mode, H - Disable Follow Cam', 0.5, 0.95, true)
+					DrawText('W/S - Move, Spacebar/Shift - Up/Down, Page Up/Page Down/Mouse Wheel - Change speed, Q - Absolute mode, H - Disable Follow Cam', 0.5, 0.95, true)
 				else
 					DrawText('W/S - Move, A/D - Rotate, Spacebar/Shift - Up/Down, Page Up/Page Down - Change speed, Q - Absolute mode, H - Enable Follow Cam', 0.5, 0.95, true)
 				end
@@ -179,16 +193,16 @@ CreateThread(function()
 				local dy = Speed * math.cos(r)
 
 				-- Move forward/backward
-				if IsDisabledControlPressed(0, Config.ForwardControl) then
+				if CheckControls(IsDisabledControlPressed, 0, Config.ForwardControl) then
 					x = x + dx
 					y = y + dy
 				end
-				if IsDisabledControlPressed(0, Config.BackwardControl) then
+				if CheckControls(IsDisabledControlPressed, 0, Config.BackwardControl) then
 					x = x - dx
 					y = y - dy
 				end
 
-				if IsDisabledControlJustPressed(0, Config.FollowCamControl) then
+				if CheckControls(IsDisabledControlJustPressed, 0, Config.FollowCamControl) then
 					ToggleFollowCam()
 				end
 
@@ -212,22 +226,22 @@ CreateThread(function()
 				h = 0.0
 
 				-- Move North
-				if IsDisabledControlPressed(0, Config.ForwardControl) then
+				if CheckControls(IsDisabledControlPressed, 0, Config.ForwardControl) then
 					y = y + Speed
 				end
 
 				-- Move South
-				if IsDisabledControlPressed(0, Config.BackwardControl) then
+				if CheckControls(IsDisabledControlPressed, 0, Config.BackwardControl) then
 					y = y - Speed
 				end
 
 				-- Move East
-				if IsDisabledControlPressed(0, Config.LeftControl) then
+				if CheckControls(IsDisabledControlPressed, 0, Config.LeftControl) then
 					x = x - Speed
 				end
 
 				-- Move West
-				if IsDisabledControlPressed(0, Config.RightControl) then
+				if CheckControls(IsDisabledControlPressed, 0, Config.RightControl) then
 					x = x + Speed
 				end
 			end
